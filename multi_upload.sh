@@ -22,7 +22,7 @@ fi
 
 
 # Set the version with default if not provided
-version=${custom_version:-"crDroidAndroid-14.0-$(date '+%Y%m%d')"}
+version=${custom_version:-"Lunaris-AOSP-16.2-$(date '+%Y%m%d')"}
 
 # Check if the tag already exists
 if gh release view "$version" &> /dev/null; then
