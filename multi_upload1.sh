@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Check and load environment variables from .env
-# First check in current directory, then parent directory
 if [ -f .env ]; then
     export $(cat .env | grep -v '#' | xargs)
     echo "✓ Loaded .env from current directory"
@@ -10,15 +9,13 @@ elif [ -f ../.env ]; then
     echo "✓ Loaded .env from parent directory"
 else
     echo "⚠ .env file not found in current or parent directory"
-    echo "Please create .env in /tmp/src/android/ or /tmp/src/android/blossom_lunaris/"
 fi
 
-# Rest of the original script continues...
 # Check if gh command-line tool is installed
 if ! command -v gh &> /dev/null; then
     echo "GitHub CLI 'gh' not found. Downloading and installing..."
-    wget https://github.com/cli/cli/releases/download/v2.94.0/gh_2.94.0_linux_amd64.tar.gz
-    tar -xvf gh_2.94.0_linux_amd64.tar.gz
+    wget https://github.com/cli/cli/releases/download/v2.40.1/gh_2.40.1_linux_amd64.tar.gz
+    tar -xvf gh_2.40.1_linux_amd64.tar.gz
     sudo mv gh_*_linux_amd64/bin/gh /usr/local/bin/
     echo "GitHub CLI 'gh' installed successfully."
 else
@@ -27,7 +24,6 @@ fi
 
 # Check if user is already authenticated
 if ! gh auth status &> /dev/null; then
-    # User not authenticated, perform login
     gh auth login --with-token $GH_TOKEN
 else
     echo "Already authenticated with GitHub."
@@ -38,7 +34,6 @@ version=${custom_version:-"Lunaris-AOSP-16.2-$(date '+%Y%m%d')"}
 
 # Check if the tag already exists
 if gh release view "$version" &> /dev/null; then
-    # Tag exists, ask for confirmation to delete the tag and releases
     echo "Deleting existing tag and releases for $version..."
     gh release delete "$version" --yes
     git tag -d "$version"
@@ -53,11 +48,7 @@ git push origin "$version" --force
 # Initialize an array to store the filenames
 declare -a filenames
 
-# Uncomment the following block if you want to upload all .zip and .img files in the current directory
- filenames=(*.zip *.img *.txt *.json)
-
-# Otherwise, ask the user to input the filenames
-# read -p "Enter the filenames (separated by spaces): " -a filenames
+filenames=(*.zip *.img *.txt *.json)
 
 # Create the release on GitHub
 if ! gh release create "$version" --title "Release $version" --notes "Release notes"; then
@@ -70,7 +61,6 @@ for filename in "${filenames[@]}"; do
     gh release upload "$version" "$filename" --clobber
 done
 
-# Display success message
 echo "Files uploaded successfully."
 
 # ============================================
@@ -79,22 +69,44 @@ echo "Files uploaded successfully."
 
 echo "Preparing to send Telegram notification..."
 
-# Telegram configuration (from .env)
 GITHUB_OWNER="${GITHUB_OWNER:-xc112lg}"
 GITHUB_REPO="${GITHUB_REPO:-blossom_lunaris}"
 RELEASE_TAG="$version"
 
-# Build download links for files
-declare -a DOWNLOAD_LINKS
+# Build download section with filename as text only
+declare -a FILE_ENTRIES
 
 for filename in "${filenames[@]}"; do
     if [ -f "$filename" ]; then
         download_url="https://github.com/$GITHUB_OWNER/$GITHUB_REPO/releases/download/$RELEASE_TAG/$filename"
-        DOWNLOAD_LINKS+=("$filename|$download_url")
+        file_size=$(du -h "$filename" 2>/dev/null | cut -f1)
+        
+        # Store: filename|url|size
+        FILE_ENTRIES+=("${filename}|${download_url}|${file_size}")
     fi
 done
 
-# Create Telegram message with download links
+# Create Downloads section
+DOWNLOADS_SECTION="━━━━━━━━━━━━━━━━━━━
+<b>📥 Downloads:</b>"
+
+for file_entry in "${FILE_ENTRIES[@]}"; do
+    filename="${file_entry%%|*}"
+    remaining="${file_entry#*|}"
+    url="${remaining%%|*}"
+    size="${remaining##*|}"
+    
+    # Filename stays as TEXT ONLY, only the [GitHub] link is clickable
+    DOWNLOADS_SECTION+="
+🔹 ${filename}: <a href=\"${url}\">GitHub</a> (${size})"
+done
+
+DOWNLOADS_SECTION+="
+
+━━━━━━━━━━━━━━━━━━━
+<b>📲 <a href=\"https://telegra.ph/flashing-instruction-11-15\">Installation Guide</a></b>"
+
+# Create full Telegram message
 TELEGRAM_MESSAGE="<b>ProjectInfinity-X 3.11 | UNOFFICIAL📱</b>
 
 <b>Device:</b> Blossom
@@ -104,32 +116,7 @@ TELEGRAM_MESSAGE="<b>ProjectInfinity-X 3.11 | UNOFFICIAL📱</b>
 <b>⚙️ <a href=\"https://t.me/ProjectInfinityX/1882\">Changelog</a></b>
 <b>📸 <a href=\"https://t.me/AsTechpro20_dump/28\">Screenshots</a></b>
 
-━━━━━━━━━━━━━━━━━━━
-<b>📥 Downloads:</b>"
-
-# Add file download links dynamically
-for link_pair in "${DOWNLOAD_LINKS[@]}"; do
-    filename="${link_pair%|*}"
-    url="${link_pair#*|}"
-    file_size=$(du -h "$filename" 2>/dev/null | cut -f1)
-    
-    # Categorize files
-    if [[ "$filename" == *"vanilla"* ]]; then
-        TELEGRAM_MESSAGE+="
-🔹 <b>Vanilla:</b> <a href=\"$url\">GitHub</a> ($file_size) | <a href=\"https://gofile.io/d/6V4MyK\">Gofile</a>"
-    elif [[ "$filename" == *"gapps"* ]] || [[ "$filename" == *"GApps"* ]]; then
-        TELEGRAM_MESSAGE+="
-🔹 <b>GApps:</b> <a href=\"$url\">GitHub</a> ($file_size) | <a href=\"https://gofile.io/d/E9w9Vz\">Gofile</a>"
-    else
-        TELEGRAM_MESSAGE+="
-🔹 <b>$filename:</b> <a href=\"$url\">GitHub</a> ($file_size)"
-    fi
-done
-
-TELEGRAM_MESSAGE+="
-
-━━━━━━━━━━━━━━━━━━━
-<b>📲 <a href=\"https://telegra.ph/flashing-instruction-11-15\">Installation Guide</a></b>
+$DOWNLOADS_SECTION
 
 ━━━━━━━━━━━━━━━━━━━
 <b>🐞 Issues:</b>
@@ -162,7 +149,6 @@ TELEGRAM_MESSAGE+="
 # Send Telegram message
 if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
     echo "⚠ Telegram credentials not set. Skipping Telegram notification."
-    echo "Make sure .env contains TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID"
 else
     echo "Sending Telegram notification..."
 
@@ -171,7 +157,6 @@ else
         -d "{\"chat_id\": $TELEGRAM_CHAT_ID, \"text\": $(echo "$TELEGRAM_MESSAGE" | jq -Rs .), \"parse_mode\": \"HTML\"}" \
         "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage")
 
-    # Check if message was sent successfully
     if echo "$RESPONSE" | grep -q '"ok":true'; then
         echo "✓ Telegram notification sent successfully!"
     else
