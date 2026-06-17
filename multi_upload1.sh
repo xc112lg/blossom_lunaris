@@ -8,7 +8,7 @@ elif [ -f ../.env ]; then
     export $(cat ../.env | grep -v '#' | xargs)
     echo "✓ Loaded .env from parent directory"
 else
-    echo "⚠ .env file not found in current or parent directory"
+    echo "⚠ .env file not found"
 fi
 
 # Check if gh command-line tool is installed
@@ -29,10 +29,8 @@ else
     echo "Already authenticated with GitHub."
 fi
 
-# Set the version with default if not provided
 version=${custom_version:-"Lunaris-AOSP-16.2-$(date '+%Y%m%d')"}
 
-# Check if the tag already exists
 if gh release view "$version" &> /dev/null; then
     echo "Deleting existing tag and releases for $version..."
     gh release delete "$version" --yes
@@ -41,22 +39,17 @@ if gh release view "$version" &> /dev/null; then
     echo "Existing tag and releases deleted."
 fi
 
-# Create the new tag and push it to GitHub
 git tag -a "$version" -m "Release $version"
 git push origin "$version" --force
 
-# Initialize an array to store the filenames
 declare -a filenames
-
 filenames=(*.zip *.img *.txt *.json)
 
-# Create the release on GitHub
 if ! gh release create "$version" --title "Release $version" --notes "Release notes"; then
     echo "Error: Failed to create the release."
     exit 1
 fi
 
-# Upload the files to the release
 for filename in "${filenames[@]}"; do
     gh release upload "$version" "$filename" --clobber
 done
@@ -73,7 +66,6 @@ GITHUB_OWNER="${GITHUB_OWNER:-xc112lg}"
 GITHUB_REPO="${GITHUB_REPO:-blossom_lunaris}"
 RELEASE_TAG="$version"
 
-# Build download section with filename as text only
 declare -a FILE_ENTRIES
 
 for filename in "${filenames[@]}"; do
@@ -81,12 +73,11 @@ for filename in "${filenames[@]}"; do
         download_url="https://github.com/$GITHUB_OWNER/$GITHUB_REPO/releases/download/$RELEASE_TAG/$filename"
         file_size=$(du -h "$filename" 2>/dev/null | cut -f1)
         
-        # Store: filename|url|size
         FILE_ENTRIES+=("${filename}|${download_url}|${file_size}")
     fi
 done
 
-# Create Downloads section
+# Create Downloads section with FRIENDLY NAMES
 DOWNLOADS_SECTION="━━━━━━━━━━━━━━━━━━━
 <b>📥 Downloads:</b>"
 
@@ -96,9 +87,20 @@ for file_entry in "${FILE_ENTRIES[@]}"; do
     url="${remaining%%|*}"
     size="${remaining##*|}"
     
-    # Filename stays as TEXT ONLY, only the [GitHub] link is clickable
+    # Extract friendly name from filename
+    friendly_name="$filename"
+    
+    if [[ "$filename" == *"Vanilla"* ]] || [[ "$filename" == *"vanilla"* ]]; then
+        friendly_name="EvolutionX Vanilla"
+    elif [[ "$filename" == *"GApps"* ]] || [[ "$filename" == *"gapps"* ]]; then
+        friendly_name="EvolutionX GApps"
+    elif [[ "$filename" == *"recovery"* ]]; then
+        friendly_name="Recovery Image"
+    fi
+    
+    # Use friendly name only (won't trigger URL detection)
     DOWNLOADS_SECTION+="
-🔹 ${filename}: <a href=\"${url}\">GitHub</a> (${size})"
+🔹 ${friendly_name}: <a href=\"${url}\">GitHub</a> (${size})"
 done
 
 DOWNLOADS_SECTION+="
