@@ -1,5 +1,19 @@
 #!/bin/bash
 
+# Check and load environment variables from .env
+# First check in current directory, then parent directory
+if [ -f .env ]; then
+    export $(cat .env | grep -v '#' | xargs)
+    echo "✓ Loaded .env from current directory"
+elif [ -f ../.env ]; then
+    export $(cat ../.env | grep -v '#' | xargs)
+    echo "✓ Loaded .env from parent directory"
+else
+    echo "⚠ .env file not found in current or parent directory"
+    echo "Please create .env in /tmp/src/android/ or /tmp/src/android/blossom_lunaris/"
+fi
+
+# Rest of the original script continues...
 # Check if gh command-line tool is installed
 if ! command -v gh &> /dev/null; then
     echo "GitHub CLI 'gh' not found. Downloading and installing..."
@@ -18,8 +32,6 @@ if ! gh auth status &> /dev/null; then
 else
     echo "Already authenticated with GitHub."
 fi
-
-
 
 # Set the version with default if not provided
 version=${custom_version:-"Lunaris-AOSP-16.2-$(date '+%Y%m%d')"}
@@ -67,11 +79,9 @@ echo "Files uploaded successfully."
 
 echo "Preparing to send Telegram notification..."
 
-# Telegram configuration
-TELEGRAM_BOT_TOKEN="YOUR_BOT_TOKEN_HERE"
-TELEGRAM_CHAT_ID="YOUR_CHAT_ID_HERE"
-GITHUB_OWNER="xc112lg"
-GITHUB_REPO="blossom_lunaris"
+# Telegram configuration (from .env)
+GITHUB_OWNER="${GITHUB_OWNER:-xc112lg}"
+GITHUB_REPO="${GITHUB_REPO:-blossom_lunaris}"
 RELEASE_TAG="$version"
 
 # Build download links for files
@@ -150,17 +160,22 @@ TELEGRAM_MESSAGE+="
 #blossom #UNOFFICIAL #projectinfinityx #infinityx #lunaridolby #Rom"
 
 # Send Telegram message
-echo "Sending Telegram notification..."
-
-RESPONSE=$(curl -s -X POST \
-    -H "Content-Type: application/json" \
-    -d "{\"chat_id\": $TELEGRAM_CHAT_ID, \"text\": $(echo "$TELEGRAM_MESSAGE" | jq -Rs .), \"parse_mode\": \"HTML\"}" \
-    "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage")
-
-# Check if message was sent successfully
-if echo "$RESPONSE" | grep -q '"ok":true'; then
-    echo "✓ Telegram notification sent successfully!"
+if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
+    echo "⚠ Telegram credentials not set. Skipping Telegram notification."
+    echo "Make sure .env contains TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID"
 else
-    echo "✗ Failed to send Telegram notification"
-    echo "Response: $RESPONSE"
+    echo "Sending Telegram notification..."
+
+    RESPONSE=$(curl -s -X POST \
+        -H "Content-Type: application/json" \
+        -d "{\"chat_id\": $TELEGRAM_CHAT_ID, \"text\": $(echo "$TELEGRAM_MESSAGE" | jq -Rs .), \"parse_mode\": \"HTML\"}" \
+        "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage")
+
+    # Check if message was sent successfully
+    if echo "$RESPONSE" | grep -q '"ok":true'; then
+        echo "✓ Telegram notification sent successfully!"
+    else
+        echo "✗ Failed to send Telegram notification"
+        echo "Response: $RESPONSE"
+    fi
 fi
