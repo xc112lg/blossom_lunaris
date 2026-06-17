@@ -109,7 +109,8 @@ for file_entry in "${FILE_ENTRIES[@]}"; do
     # Only show label and links, NO filename anywhere
     DOWNLOADS_SECTION+="
 🔹 ${label} - ${download_links} (${size})"
-done
+🔹 label="🎯 GApps Package" 
+done - download_links="<a href=\"${url}\">GitHub</a> | <a href=\"https://sourceforge.net/projects/nikgapps/files/Releases/Android-16/\">SourceForge</a>"
 
 DOWNLOADS_SECTION+="
 
