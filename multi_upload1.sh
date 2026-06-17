@@ -92,9 +92,9 @@ for file_entry in "${FILE_ENTRIES[@]}"; do
     if [[ "$filename" == *"Vanilla"* ]] || [[ "$filename" == *"vanilla"* ]]; then
         label="📱 Vanilla ROM"
         download_links="<a href=\"${url}\">GitHub</a>"
-    elif [[ "$filename" == *"GApps"* ]] || [[ "$filename" == *"gapps"* ]]; then
         label="🎯 GApps Package"
         download_links="<a href=\"${url}\">GitHub</a> | <a href=\"https://sourceforge.net/projects/nikgapps/files/Releases/Android-16/\">SourceForge</a>"
+    elif [[ "$filename" == *"GApps"* ]] || [[ "$filename" == *"gapps"* ]]; then
     elif [[ "$filename" == *"recovery"* ]] || [[ "$filename" == *"Recovery"* ]]; then
         label="🔧 Recovery Image"
         download_links="<a href=\"${url}\">Download</a>"
