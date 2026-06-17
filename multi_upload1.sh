@@ -87,22 +87,28 @@ for file_entry in "${FILE_ENTRIES[@]}"; do
     
     # Create label based on filename but don't show actual filename
     label="File"
+    download_links=""
     
     if [[ "$filename" == *"Vanilla"* ]] || [[ "$filename" == *"vanilla"* ]]; then
         label="📱 Vanilla ROM"
+        download_links="<a href=\"${url}\">GitHub</a>"
     elif [[ "$filename" == *"GApps"* ]] || [[ "$filename" == *"gapps"* ]]; then
         label="🎯 GApps Package"
+        download_links="<a href=\"${url}\">GitHub</a> | <a href=\"https://sourceforge.net/projects/nikgapps/files/Releases/Android-16/\">SourceForge</a>"
     elif [[ "$filename" == *"recovery"* ]] || [[ "$filename" == *"Recovery"* ]]; then
         label="🔧 Recovery Image"
+        download_links="<a href=\"${url}\">Download</a>"
     elif [[ "$filename" == *.zip ]]; then
         label="📦 ROM Package"
+        download_links="<a href=\"${url}\">Download</a>"
     elif [[ "$filename" == *.img ]]; then
         label="💾 Image File"
+        download_links="<a href=\"${url}\">Download</a>"
     fi
     
-    # Only show label and link, NO filename anywhere
+    # Only show label and links, NO filename anywhere
     DOWNLOADS_SECTION+="
-🔹 ${label} - <a href=\"${url}\">Download</a> (${size})"
+🔹 ${label} - ${download_links} (${size})"
 done
 
 DOWNLOADS_SECTION+="
