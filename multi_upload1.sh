@@ -11,7 +11,6 @@ else
     echo "⚠ .env file not found"
 fi
 
-# Check if gh command-line tool is installed
 if ! command -v gh &> /dev/null; then
     echo "GitHub CLI 'gh' not found. Downloading and installing..."
     wget https://github.com/cli/cli/releases/download/v2.40.1/gh_2.40.1_linux_amd64.tar.gz
@@ -22,7 +21,6 @@ else
     echo "GitHub CLI 'gh' is already installed."
 fi
 
-# Check if user is already authenticated
 if ! gh auth status &> /dev/null; then
     gh auth login --with-token $GH_TOKEN
 else
@@ -77,7 +75,7 @@ for filename in "${filenames[@]}"; do
     fi
 done
 
-# Create Downloads section with FRIENDLY NAMES
+# Create Downloads section with LABELS ONLY (no filename shown)
 DOWNLOADS_SECTION="━━━━━━━━━━━━━━━━━━━
 <b>📥 Downloads:</b>"
 
@@ -87,20 +85,24 @@ for file_entry in "${FILE_ENTRIES[@]}"; do
     url="${remaining%%|*}"
     size="${remaining##*|}"
     
-    # Extract friendly name from filename
-    friendly_name="$filename"
+    # Create label based on filename but don't show actual filename
+    label="File"
     
     if [[ "$filename" == *"Vanilla"* ]] || [[ "$filename" == *"vanilla"* ]]; then
-        friendly_name="EvolutionX Vanilla"
+        label="📱 Vanilla ROM"
     elif [[ "$filename" == *"GApps"* ]] || [[ "$filename" == *"gapps"* ]]; then
-        friendly_name="EvolutionX GApps"
-    elif [[ "$filename" == *"recovery"* ]]; then
-        friendly_name="Recovery Image"
+        label="🎯 GApps Package"
+    elif [[ "$filename" == *"recovery"* ]] || [[ "$filename" == *"Recovery"* ]]; then
+        label="🔧 Recovery Image"
+    elif [[ "$filename" == *.zip ]]; then
+        label="📦 ROM Package"
+    elif [[ "$filename" == *.img ]]; then
+        label="💾 Image File"
     fi
     
-    # Use friendly name only (won't trigger URL detection)
+    # Only show label and link, NO filename anywhere
     DOWNLOADS_SECTION+="
-🔹 ${friendly_name}: <a href=\"${url}\">GitHub</a> (${size})"
+🔹 ${label} - <a href=\"${url}\">Download</a> (${size})"
 done
 
 DOWNLOADS_SECTION+="
