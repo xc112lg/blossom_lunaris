@@ -111,7 +111,7 @@ for file_entry in "${FILE_ENTRIES[@]}"; do
 done
 
 DOWNLOADS_SECTION+="
-🔹 <b>"🎯 GApps Package" - download_links="<a href=\"https://sourceforge.net/projects/nikgapps/files/Releases/Android-16/\">SourceForge</a></b>"
+🔹 <b>🎯 GApps Package <a href=\"https://sourceforge.net/projects/nikgapps/files/Releases/Android-16/\">SourceForge</a></b>"
 
 DOWNLOADS_SECTION+="
 
