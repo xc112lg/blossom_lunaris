@@ -119,7 +119,7 @@ done
 DOWNLOADS_SECTION+="
 
 ━━━━━━━━━━━━━━━━━━━
-<b>📲 <a href=\"https://raw.githubusercontent.com/Evolution-X/changelog/refs/heads/bka/changelogs/LATEST.txt\">Installation Guide</a></b>"
+<b>📲 <a href=\"https://telegra.ph/flashing-instruction-11-15\">Installation Guide</a></b>"
 
 # Create full Telegram message
 TELEGRAM_MESSAGE="<b>EvolutionX-16.0 | UNOFFICIAL📱</b>
