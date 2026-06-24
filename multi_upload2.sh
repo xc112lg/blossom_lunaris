@@ -136,27 +136,37 @@ $DOWNLOADS_SECTION
 
 ━━━━━━━━━━━━━━━━━━━
 <b>📝 Notes:</b>
-• Both GApps & Vanilla are available
+• Blur effect will only work on 3GB ram up variant let me know if it doesnt work,but it should
+• NFC only spawn on angelican on this build
 • Signed build
+• Removed         
+        "Traceur",
+        "EasterEgg",
+        "BluetoothMidiService",
+        "CallLogBackup",
+        "PhotoTable",
 • Includes MIUI Camera & Lunari Dolby
 • June security patch
 • Default Kernel Sashimi
 
 ━━━━━━━━━━━━━━━━━━━
 <b>❤️ Credits & Thanks:</b>
+• @HaiKitoo for trees
+• @fukiame for kernel
 • Yui Onanii, fukiame, @snnbyyds, <a href=\"http://t.me/Sushrut1101\">Sushrut</a>, xiaomi-blossom-dev contributors for base tree
-• Thanks to <a href=\"http://t.me/nya_toru0w0\">Noi</a> for server
+• Thanks to <a href=\"https://foss.crave.io\">crave.io</a> for server
 • Special Thanks to 0kaarun & Yohan Yuan for their help
 • Thanks to all other devs
 
 ━━━━━━━━━━━━━━━━━━━
 <b>🌐 Stay Updated:</b>
-📢 @AsTechpro20_lab
-📢 @AsTechpro20_dump
-📢 @AsTechpro20_lab_support
+📢 @changelogblossom_bot
+
+<b>🌐 Msg  me if needed help or changes:</b>
+📢 @xc112lg
 
 ━━━━━━━━━━━━━━━━━━━
-#blossom #UNOFFICIAL #projectinfinityx #infinityx #lunaridolby #Rom"
+#blossom #UNOFFICIAL #EvolutionX #lunaridolby #Rom"
 
 # Send Telegram message with banner image merged
 if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
