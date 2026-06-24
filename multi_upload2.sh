@@ -138,7 +138,6 @@ $DOWNLOADS_SECTION
 <b>📝 Notes:</b>
 • NFC only spawn on angelican on this build
 • Blur effect only work with 3GB memory and up
-• Removed Traceur,EasterEgg,BluetoothMidiService,CallLogBackup,PhotoTable
 • Signed build
 • Includes MIUI Camera & Lunari Dolby
 • June security patch
@@ -171,29 +170,15 @@ else
 
     # Send photo with full message as caption (merged into one)
     echo "Sending merged image and message..."
-    
-    # Build JSON payload properly using jq to avoid escaping issues
-    JSON_PAYLOAD=$(jq -n \
-        --arg chat_id "$TELEGRAM_CHAT_ID" \
-        --arg photo "$BANNER_IMAGE" \
-        --arg caption "$TELEGRAM_MESSAGE" \
-        --arg parse_mode "HTML" \
-        '{chat_id: ($chat_id | tonumber), photo: $photo, caption: $caption, parse_mode: $parse_mode}')
-    
-    echo "📋 JSON Payload being sent:"
-    echo "$JSON_PAYLOAD" | jq '.' 2>/dev/null || echo "$JSON_PAYLOAD"
-    
     RESPONSE=$(curl -s -X POST \
         -H "Content-Type: application/json" \
-        -d "$JSON_PAYLOAD" \
+        -d "{\"chat_id\": $TELEGRAM_CHAT_ID, \"photo\": \"${BANNER_IMAGE}\", \"caption\": $(echo "$TELEGRAM_MESSAGE" | jq -Rs .), \"parse_mode\": \"HTML\"}" \
         "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendPhoto")
 
-    echo "📨 Telegram API Response:"
-    echo "$RESPONSE" | jq '.' 2>/dev/null || echo "$RESPONSE"
-    
     if echo "$RESPONSE" | grep -q '"ok":true'; then
         echo "✓ Telegram notification sent successfully with banner!"
     else
         echo "✗ Failed to send Telegram notification"
+        echo "Response: $RESPONSE"
     fi
 fi
