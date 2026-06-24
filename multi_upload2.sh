@@ -137,8 +137,6 @@ $DOWNLOADS_SECTION
 ━━━━━━━━━━━━━━━━━━━
 <b>🐞 Issues:</b>
 • Blur effect only work with 3GB memory
-• Blur effect only work with 3GB memory
-• Blur effect only work with 3GB memory
 
 ━━━━━━━━━━━━━━━━━━━
 <b>📝 Notes:</b>
@@ -147,7 +145,7 @@ $DOWNLOADS_SECTION
 • Includes MIUI Camera & Lunari Dolby
 • June security patch
 • Default Kernel Sashimi
-
+🔹s
 
 ━━━━━━━━━━━━━━━━━━━
 <b>❤️ Credits & Thanks:</b>
