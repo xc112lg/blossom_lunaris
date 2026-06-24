@@ -59,27 +59,6 @@ done
 echo "Files uploaded successfully."
 
 # ============================================
-# FETCH CHANGELOG FROM GITHUB
-# ============================================
-
-echo "Fetching changelog from GitHub..."
-
-CHANGELOG_URL="https://raw.githubusercontent.com/Evolution-X/changelog/refs/heads/bka/changelogs/LATEST.txt"
-CHANGELOG_TEMP=$(mktemp)
-
-# Download changelog with timeout
-if curl -s --max-time 10 "$CHANGELOG_URL" -o "$CHANGELOG_TEMP"; then
-    echo "✓ Changelog fetched successfully"
-    CHANGELOG_CONTENT=$(cat "$CHANGELOG_TEMP")
-    CHANGELOG_AVAILABLE=1
-else
-    echo "⚠ Failed to fetch changelog (will continue without it)"
-    CHANGELOG_AVAILABLE=0
-fi
-
-rm -f "$CHANGELOG_TEMP"
-
-# ============================================
 # TELEGRAM NOTIFICATION
 # ============================================
 
@@ -100,7 +79,7 @@ for filename in "${filenames[@]}"; do
     fi
 done
 
-# Create Downloads section with LABELS ONLY
+# Create Downloads section with LABELS ONLY (no filename shown)
 DOWNLOADS_SECTION="━━━━━━━━━━━━━━━━━━━
 <b>📥 Downloads:</b>"
 
@@ -110,6 +89,7 @@ for file_entry in "${FILE_ENTRIES[@]}"; do
     url="${remaining%%|*}"
     size="${remaining##*|}"
     
+    # Create label based on filename but don't show actual filename
     label="File"
     download_links=""
     
@@ -130,6 +110,7 @@ for file_entry in "${FILE_ENTRIES[@]}"; do
         download_links="<a href=\"${url}\">Download</a>"
     fi
     
+    # Only show label and links, NO filename anywhere
     DOWNLOADS_SECTION+="
 🔹 ${label} - ${download_links} (${size})"
 
@@ -140,45 +121,26 @@ DOWNLOADS_SECTION+="
 ━━━━━━━━━━━━━━━━━━━
 <b>📲 <a href=\"https://telegra.ph/flashing-instruction-11-15\">Installation Guide</a></b>"
 
-# Build Changelog Section if available
-CHANGELOG_SECTION=""
-if [ $CHANGELOG_AVAILABLE -eq 1 ]; then
-    # Limit changelog to first 30 lines to avoid message size issues
-    CHANGELOG_PREVIEW=$(echo "$CHANGELOG_CONTENT" | head -30)
-    
-    # Escape special characters for HTML
-    CHANGELOG_PREVIEW=$(echo "$CHANGELOG_PREVIEW" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g')
-    
-    CHANGELOG_SECTION="
-━━━━━━━━━━━━━━━━━━━
-<b>📋 Changelog Preview:</b>
-<code>
-$CHANGELOG_PREVIEW
-</code>
-
-<a href=\"https://raw.githubusercontent.com/Evolution-X/changelog/refs/heads/bka/changelogs/LATEST.txt\">View Full Changelog →</a>"
-fi
-
 # Create full Telegram message
-TELEGRAM_MESSAGE="<b>ProjectInfinity-X 3.11 | UNOFFICIAL📱</b>
+TELEGRAM_MESSAGE="<b>EvolutionX-16.0 | UNOFFICIAL📱</b>
 
 <b>Device:</b> Blossom
-<b>👨‍💻 Builder:</b> <a href=\"http://t.me/astechpro20\">AsTechpro20</a>
+<b>👨‍💻 Builder:</b> <a href=\"http://t.me/xc112lg\">xc112lg</a>
 <b>🤖 Android Version:</b> 16 | QPR2
 <b>📅 Build Date:</b> $(date '+%d/%m/%y')
 <b>⚙️ <a href=\"https://t.me/ProjectInfinityX/1882\">Changelog</a></b>
 <b>📸 <a href=\"https://t.me/AsTechpro20_dump/28\">Screenshots</a></b>
 
 $DOWNLOADS_SECTION
-$CHANGELOG_SECTION
 
 ━━━━━━━━━━━━━━━━━━━
 <b>🐞 Issues:</b>
-• Blur effect only work with 3GB memory
+• NFC not working
 
 ━━━━━━━━━━━━━━━━━━━
 <b>📝 Notes:</b>
-• Both GApps & Vanilla are available
+• NFC wont spawn on non NFC variant that causes error
+• Blur effect will only work for 3GB ram and up variant
 • Signed build
 • Includes MIUI Camera & Lunari Dolby
 • June security patch
@@ -186,19 +148,20 @@ $CHANGELOG_SECTION
 
 ━━━━━━━━━━━━━━━━━━━
 <b>❤️ Credits & Thanks:</b>
+• @HaiKitoo for trees
+• @fukiame for kernel
+• @astechpro20 for msg template
 • Yui Onanii, fukiame, @snnbyyds, <a href=\"http://t.me/Sushrut1101\">Sushrut</a>, xiaomi-blossom-dev contributors for base tree
-• Thanks to <a href=\"http://t.me/nya_toru0w0\">Noi</a> for server
+• Thanks to <a href=\"http://foss.crave.io\">crave.io</a> for server
 • Special Thanks to 0kaarun & Yohan Yuan for their help
 • Thanks to all other devs
 
 ━━━━━━━━━━━━━━━━━━━
 <b>🌐 Stay Updated:</b>
-📢 @AsTechpro20_lab
-📢 @AsTechpro20_dump
-📢 @AsTechpro20_lab_support
+📢 @changelogblossom_bot
 
 ━━━━━━━━━━━━━━━━━━━
-#blossom #UNOFFICIAL #projectinfinityx #infinityx #lunaridolby #Rom"
+#blossom #UNOFFICIAL #Evolution-X #lunaridolby #Rom"
 
 # Send Telegram message with smart fallback
 if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
