@@ -140,11 +140,11 @@ $DOWNLOADS_SECTION
 • NFC only spawn on angelican on this build
 • Signed build
 • Removed         
-        "Traceur",
-        "EasterEgg",
-        "BluetoothMidiService",
-        "CallLogBackup",
-        "PhotoTable",
+        Traceur
+        EasterEgg
+        BluetoothMidiService
+        CallLogBackup
+        PhotoTable
 • Includes MIUI Camera & Lunari Dolby
 • June security patch
 • Default Kernel Sashimi
