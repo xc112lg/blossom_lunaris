@@ -1,0 +1,56 @@
+name: Delete All Releases and Tags
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Delete all releases
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          echo "Fetching releases..."
+
+          releases=$(curl -s \
+            -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/$REPO/releases?per_page=100" \
+            | jq -r '.[].id')
+
+          for id in $releases; do
+            echo "Deleting release ID: $id"
+
+            curl -s -X DELETE \
+              -H "Authorization: token $GH_TOKEN" \
+              "https://api.github.com/repos/$REPO/releases/$id"
+          done
+
+      - name: Delete all tags
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          echo "Fetching tags..."
+
+          tags=$(curl -s \
+            -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/$REPO/git/refs/tags" \
+            | jq -r '.[].ref')
+
+          for tag in $tags; do
+            echo "Deleting tag: $tag"
+
+            encoded_tag=$(printf '%s\n' "$tag" | sed 's#refs/tags/##')
+
+            curl -s -X DELETE \
+              -H "Authorization: token $GH_TOKEN" \
+              "https://api.github.com/repos/$REPO/git/refs/tags/$encoded_tag"
+          done
+
+          echo "Done."
