@@ -140,7 +140,7 @@ $DOWNLOADS_SECTION
 
 ━━━━━━━━━━━━━━━━━━━
 <b>📝 Notes:</b>
-• Both GApps & Vanilla are available
+• Isolated NFC issue angelican, so non nfc varaints wont show nfc app
 • Signed build
 • Includes MIUI Camera & Lunari Dolby
 • June security patch
