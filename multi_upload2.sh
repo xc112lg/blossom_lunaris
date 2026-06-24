@@ -135,11 +135,12 @@ $DOWNLOADS_SECTION
 
 ━━━━━━━━━━━━━━━━━━━
 <b>🐞 Issues:</b>
-• Blur effect only work with 3GB memory
+• NFC not working
 
 ━━━━━━━━━━━━━━━━━━━
 <b>📝 Notes:</b>
-• Both GApps & Vanilla are available
+• Isolated NFC issue to angelican,NFC wont spawn on non NFC variant
+• Debloat some system apps
 • Signed build
 • Includes MIUI Camera & Lunari Dolby
 • June security patch
@@ -155,8 +156,6 @@ $DOWNLOADS_SECTION
 ━━━━━━━━━━━━━━━━━━━
 <b>🌐 Stay Updated:</b>
 📢 @AsTechpro20_lab
-📢 @AsTechpro20_dump
-📢 @AsTechpro20_lab_support
 
 ━━━━━━━━━━━━━━━━━━━
 #blossom #UNOFFICIAL #projectinfinityx #infinityx #lunaridolby #Rom"
