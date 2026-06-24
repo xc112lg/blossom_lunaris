@@ -141,6 +141,8 @@ $DOWNLOADS_SECTION
 ━━━━━━━━━━━━━━━━━━━
 <b>📝 Notes:</b>
 • Isolated NFC issue angelican, so non nfc varaints wont show nfc app
+• Blur effect will only work on 3GB ram up variant let me know if it doesnt work,but it should
+• Debloat some system apps
 • Signed build
 • Includes MIUI Camera & Lunari Dolby
 • June security patch
