@@ -139,11 +139,6 @@ $DOWNLOADS_SECTION
 • Blur effect will only work on 3GB ram up variant let me know if it doesnt work,but it should
 • NFC only spawn on angelican on this build
 • Removed         
-        Traceur
-        EasterEgg
-        BluetoothMidiService
-        CallLogBackup
-        PhotoTable
 • Signed build
 • Includes MIUI Camera & Lunari Dolby
 • June security patch
