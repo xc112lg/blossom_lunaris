@@ -136,6 +136,7 @@ $DOWNLOADS_SECTION
 
 ━━━━━━━━━━━━━━━━━━━
 <b>📝 Notes:</b>
+• Blur effect will only work on 3GB ram up 
 • NFC only spawn on angelican on this build
 • Removed         
 • Signed build
