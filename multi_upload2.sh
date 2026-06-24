@@ -142,7 +142,6 @@ $DOWNLOADS_SECTION
 <b>📝 Notes:</b>
 • Isolated NFC issue angelican, so non nfc varaints wont show nfc app
 • Signed build
-• Signed build2
 • Includes MIUI Camera & Lunari Dolby
 • June security patch
 • Default Kernel Sashimi
