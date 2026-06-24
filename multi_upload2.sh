@@ -96,7 +96,9 @@ for file_entry in "${FILE_ENTRIES[@]}"; do
     if [[ "$filename" == *"Vanilla"* ]] || [[ "$filename" == *"vanilla"* ]]; then
         label="📱 Vanilla ROM"
         download_links="<a href=\"${url}\">GitHub</a>"
+    elif [[ "$filename" == *"GApps"* ]] || [[ "$filename" == *"gapps"* ]]; then
         label="🎯 GApps Package"
+        download_links="<a href=\"${url}\">GitHub</a> | <a href=\"https://sourceforge.net/projects/nikgapps/files/Releases/Android-16/\">SourceForge</a>"
     elif [[ "$filename" == *"recovery"* ]] || [[ "$filename" == *"Recovery"* ]]; then
         label="🔧 Recovery Image"
         download_links="<a href=\"${url}\">Download</a>"
@@ -113,9 +115,6 @@ for file_entry in "${FILE_ENTRIES[@]}"; do
 🔹 ${label} - ${download_links} (${size})"
 
 done
-
-DOWNLOADS_SECTION+="
-🔹 🎯 GApps Package <a href=\"https://sourceforge.net/projects/nikgapps/files/Releases/Android-16/\">SourceForge</a>"
 
 DOWNLOADS_SECTION+="
 
@@ -136,20 +135,18 @@ $DOWNLOADS_SECTION
 
 ━━━━━━━━━━━━━━━━━━━
 <b>🐞 Issues:</b>
-• NFC is not working
+• Blur effect only work with 3GB memory
 
 ━━━━━━━━━━━━━━━━━━━
 <b>📝 Notes:</b>
-🔹 Isolated NFC issue angelican, so non nfc varaints wont show nfc app
-🔹 Signed build
-🔹 Includes MIUI Camera & Lunari Dolby
-🔹 June security patch
-🔹 Default Kernel Sashimi
+• Both GApps & Vanilla are available
+• Signed build
+• Includes MIUI Camera & Lunari Dolby
+• June security patch
+• Default Kernel Sashimi
 
 ━━━━━━━━━━━━━━━━━━━
 <b>❤️ Credits & Thanks:</b>
-• @HaiKitoo for trees
-• @fukiame for kernel
 • Yui Onanii, fukiame, @snnbyyds, <a href=\"http://t.me/Sushrut1101\">Sushrut</a>, xiaomi-blossom-dev contributors for base tree
 • Thanks to <a href=\"http://t.me/nya_toru0w0\">Noi</a> for server
 • Special Thanks to 0kaarun & Yohan Yuan for their help
@@ -157,26 +154,35 @@ $DOWNLOADS_SECTION
 
 ━━━━━━━━━━━━━━━━━━━
 <b>🌐 Stay Updated:</b>
-📢 @xc112lg
-
+📢 @AsTechpro20_lab
+📢 @AsTechpro20_dump
+📢 @AsTechpro20_lab_support
 
 ━━━━━━━━━━━━━━━━━━━
 #blossom #UNOFFICIAL #projectinfinityx #infinityx #lunaridolby #Rom"
 
-# Send Telegram message with banner image merged
+# Send Telegram message with smart fallback
 if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
     echo "⚠ Telegram credentials not set. Skipping Telegram notification."
 else
-    echo "Sending Telegram notification with banner image..."
+    echo "Sending Telegram notification..."
 
     # Banner image URL
     BANNER_IMAGE="https://github.com/Evolution-X/manifest/raw/bka/Banner.png"
 
-    # Create temporary JSON file to handle special characters properly
-    TEMP_JSON=$(mktemp)
+    # Check message length
+    MSG_LENGTH=${#TELEGRAM_MESSAGE}
+    echo "Message length: $MSG_LENGTH characters"
     
-    # Build JSON payload properly with proper escaping
-    cat > "$TEMP_JSON" << JSONEOF
+    # Telegram caption limit (conservative estimate)
+    CAPTION_LIMIT=3500
+
+    if [ $MSG_LENGTH -le $CAPTION_LIMIT ]; then
+        # Message fits in caption - send as merged
+        echo "✓ Message fits in caption - sending merged (image + text in one)"
+        
+        TEMP_JSON=$(mktemp)
+        cat > "$TEMP_JSON" << JSONEOF
 {
     "chat_id": $TELEGRAM_CHAT_ID,
     "photo": "$BANNER_IMAGE",
@@ -185,22 +191,62 @@ else
 }
 JSONEOF
 
-    # Send photo with merged message
-    echo "Sending merged image and message..."
-    RESPONSE=$(curl -s -X POST \
-        -H "Content-Type: application/json" \
-        -d @"$TEMP_JSON" \
-        "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendPhoto")
+        RESPONSE=$(curl -s -X POST \
+            -H "Content-Type: application/json" \
+            -d @"$TEMP_JSON" \
+            "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendPhoto")
 
-    # Clean up temporary file
-    rm -f "$TEMP_JSON"
+        rm -f "$TEMP_JSON"
 
-    if echo "$RESPONSE" | grep -q '"ok":true'; then
-        echo "✓ Telegram notification sent successfully with banner!"
+        if echo "$RESPONSE" | grep -q '"ok":true'; then
+            echo "✓ Telegram notification sent successfully (merged)!"
+        else
+            echo "⚠ Merged send failed, trying fallback..."
+            FALLBACK=1
+        fi
     else
-        echo "✗ Failed to send Telegram notification"
-        echo "Response: $RESPONSE"
-        echo ""
-        echo "Troubleshooting tip: Check your message doesn't have unescaped special characters"
+        # Message too long for caption - use fallback
+        echo "⚠ Message too long for caption ($MSG_LENGTH > $CAPTION_LIMIT)"
+        echo "✓ Using fallback: Sending image + text as separate messages"
+        FALLBACK=1
+    fi
+
+    # FALLBACK: Send image and text separately if needed
+    if [ "$FALLBACK" == "1" ]; then
+        echo "Sending image first..."
+        
+        # Send image
+        curl -s -X POST \
+            -H "Content-Type: application/json" \
+            -d "{\"chat_id\": $TELEGRAM_CHAT_ID, \"photo\": \"$BANNER_IMAGE\", \"caption\": \"<b>ProjectInfinity-X 3.11 Release</b>\", \"parse_mode\": \"HTML\"}" \
+            "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendPhoto" > /dev/null
+
+        echo "Sending full message..."
+        
+        # Send full text message
+        TEMP_JSON=$(mktemp)
+        cat > "$TEMP_JSON" << JSONEOF
+{
+    "chat_id": $TELEGRAM_CHAT_ID,
+    "text": $(printf '%s\n' "$TELEGRAM_MESSAGE" | jq -R -s .),
+    "parse_mode": "HTML"
+}
+JSONEOF
+
+        RESPONSE=$(curl -s -X POST \
+            -H "Content-Type: application/json" \
+            -d @"$TEMP_JSON" \
+            "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage")
+
+        rm -f "$TEMP_JSON"
+
+        if echo "$RESPONSE" | grep -q '"ok":true'; then
+            echo "✓ Telegram notification sent successfully (fallback)!"
+        else
+            echo "✗ Failed to send Telegram notification"
+            echo "Response: $RESPONSE"
+        fi
     fi
 fi
+
+echo "✓ Release complete!"
