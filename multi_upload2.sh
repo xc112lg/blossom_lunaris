@@ -145,7 +145,7 @@ $DOWNLOADS_SECTION
         BluetoothMidiService
         CallLogBackup
         PhotoTable
-• Includes MIUI Camera & Lunari Dolby
+• Includes MIUI Camera & Lunaris Dolby
 • June security patch
 • Default Kernel Sashimi
 
