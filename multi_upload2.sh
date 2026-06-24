@@ -145,6 +145,8 @@ $DOWNLOADS_SECTION
 • Includes MIUI Camera & Lunari Dolby
 • June security patch
 • Default Kernel Sashimi
+• Default Kernel Sashimi
+• Default Kernel Sashimi
 
 ━━━━━━━━━━━━━━━━━━━
 <b>❤️ Credits & Thanks:</b>
