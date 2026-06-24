@@ -122,10 +122,10 @@ DOWNLOADS_SECTION+="
 <b>📲 <a href=\"https://telegra.ph/flashing-instruction-11-15\">Installation Guide</a></b>"
 
 # Create full Telegram message
-TELEGRAM_MESSAGE="<b>ProjectInfinity-X 3.11 | UNOFFICIAL📱</b>
+TELEGRAM_MESSAGE="<b>EvolutionX-16.0 | UNOFFICIAL📱</b>
 
 <b>Device:</b> Blossom
-<b>👨‍💻 Builder:</b> <a href=\"http://t.me/astechpro20\">AsTechpro20</a>
+<b>👨‍💻 Builder:</b> <a href=\"http://t.me/xc112lg\">xc112lg</a>
 <b>🤖 Android Version:</b> 16 | QPR2
 <b>📅 Build Date:</b> $(date '+%d/%m/%y')
 <b>⚙️ <a href=\"https://t.me/ProjectInfinityX/1882\">Changelog</a></b>
@@ -149,17 +149,20 @@ $DOWNLOADS_SECTION
 
 ━━━━━━━━━━━━━━━━━━━
 <b>❤️ Credits & Thanks:</b>
+• @HaiKitoo for trees
+• @fukiame for kernel
+• @astechpro20 for msg template
 • Yui Onanii, fukiame, @snnbyyds, <a href=\"http://t.me/Sushrut1101\">Sushrut</a>, xiaomi-blossom-dev contributors for base tree
-• Thanks to <a href=\"http://t.me/nya_toru0w0\">Noi</a> for server
+• Thanks to <a href=\"http://foss.crave.io\">crave.io</a> for server
 • Special Thanks to 0kaarun & Yohan Yuan for their help
 • Thanks to all other devs
 
 ━━━━━━━━━━━━━━━━━━━
 <b>🌐 Stay Updated:</b>
-📢 @AsTechpro20_lab
+📢 @changelogblossom_bot
 
 ━━━━━━━━━━━━━━━━━━━
-#blossom #UNOFFICIAL #projectinfinityx #infinityx #lunaridolby #Rom"
+#blossom #UNOFFICIAL #Evolution-X #lunaridolby #Rom"
 
 # Send Telegram message with smart fallback
 if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
