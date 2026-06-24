@@ -138,6 +138,7 @@ $DOWNLOADS_SECTION
 <b>📝 Notes:</b>
 • NFC only spawn on angelican on this build
 • Blur effect only work with 3GB memory and up
+• Debloat some systems apps
 • Signed build
 • Includes MIUI Camera & Lunari Dolby
 • June security patch
