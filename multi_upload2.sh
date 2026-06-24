@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Set proper UTF-8 encoding for special characters
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+
 # Check and load environment variables from .env
 if [ -f .env ]; then
     export $(cat .env | grep -v '#' | xargs)
@@ -122,7 +126,7 @@ DOWNLOADS_SECTION+="
 TELEGRAM_MESSAGE="<b>ProjectInfinity-X 3.11 | UNOFFICIAL📱</b>
 
 <b>Device:</b> Blossom
-<b>👨‍💻 Builder:</b> <a href=\"http://t.me/xc112lg\">xc112lg</a>
+<b>👨‍💻 Builder:</b> <a href=\"http://t.me/astechpro20\">AsTechpro20</a>
 <b>🤖 Android Version:</b> 16 | QPR2
 <b>📅 Build Date:</b> $(date '+%d/%m/%y')
 <b>⚙️ <a href=\"https://t.me/ProjectInfinityX/1882\">Changelog</a></b>
@@ -132,13 +136,11 @@ $DOWNLOADS_SECTION
 
 ━━━━━━━━━━━━━━━━━━━
 <b>🐞 Issues:</b>
-• NFC is not working
+• Blur effect only work with 3GB memory
 
 ━━━━━━━━━━━━━━━━━━━
 <b>📝 Notes:</b>
-• NFC only spawn on angelican on this build
-• Blur effect only work with 3GB memory and up
-• Debloat 
+• Both GApps & Vanilla are available
 • Signed build
 • Includes MIUI Camera & Lunari Dolby
 • June security patch
@@ -169,17 +171,35 @@ else
     # Banner image URL
     BANNER_IMAGE="https://github.com/Evolution-X/manifest/raw/bka/Banner.png"
 
-    # Send photo with full message as caption (merged into one)
+    # Create temporary JSON file to handle special characters properly
+    TEMP_JSON=$(mktemp)
+    
+    # Build JSON payload properly with proper escaping
+    cat > "$TEMP_JSON" << JSONEOF
+{
+    "chat_id": $TELEGRAM_CHAT_ID,
+    "photo": "$BANNER_IMAGE",
+    "caption": $(printf '%s\n' "$TELEGRAM_MESSAGE" | jq -R -s .),
+    "parse_mode": "HTML"
+}
+JSONEOF
+
+    # Send photo with merged message
     echo "Sending merged image and message..."
     RESPONSE=$(curl -s -X POST \
         -H "Content-Type: application/json" \
-        -d "{\"chat_id\": $TELEGRAM_CHAT_ID, \"photo\": \"${BANNER_IMAGE}\", \"caption\": $(echo "$TELEGRAM_MESSAGE" | jq -Rs .), \"parse_mode\": \"HTML\"}" \
+        -d @"$TEMP_JSON" \
         "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendPhoto")
+
+    # Clean up temporary file
+    rm -f "$TEMP_JSON"
 
     if echo "$RESPONSE" | grep -q '"ok":true'; then
         echo "✓ Telegram notification sent successfully with banner!"
     else
         echo "✗ Failed to send Telegram notification"
         echo "Response: $RESPONSE"
+        echo ""
+        echo "Troubleshooting tip: Check your message doesn't have unescaped special characters"
     fi
 fi
