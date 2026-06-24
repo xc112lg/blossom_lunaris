@@ -145,10 +145,11 @@ $DOWNLOADS_SECTION
 🔹 Includes MIUI Camera & Lunari Dolby
 🔹 June security patch
 🔹 Default Kernel Sashimi
-🔹 dw
 
 ━━━━━━━━━━━━━━━━━━━
 <b>❤️ Credits & Thanks:</b>
+• @HaiKitoo for trees
+• @fukiame for kernel
 • Yui Onanii, fukiame, @snnbyyds, <a href=\"http://t.me/Sushrut1101\">Sushrut</a>, xiaomi-blossom-dev contributors for base tree
 • Thanks to <a href=\"http://t.me/nya_toru0w0\">Noi</a> for server
 • Special Thanks to 0kaarun & Yohan Yuan for their help
@@ -156,9 +157,8 @@ $DOWNLOADS_SECTION
 
 ━━━━━━━━━━━━━━━━━━━
 <b>🌐 Stay Updated:</b>
-📢 @AsTechpro20_lab
-📢 @AsTechpro20_dump
-📢 @AsTechpro20_lab_support
+📢 @xc112lg
+
 
 ━━━━━━━━━━━━━━━━━━━
 #blossom #UNOFFICIAL #projectinfinityx #infinityx #lunaridolby #Rom"
