@@ -136,15 +136,15 @@ $DOWNLOADS_SECTION
 
 ━━━━━━━━━━━━━━━━━━━
 <b>🐞 Issues:</b>
-• Blur effect only work with 3GB memory
+• NFC is not working
 
 ━━━━━━━━━━━━━━━━━━━
 <b>📝 Notes:</b>
-• Isolated NFC issue angelican, so non nfc varaints wont show nfc app
-• Signed build
-• Includes MIUI Camera & Lunari Dolby
-• June security patch
-• Default Kernel Sashimi
+🔹 Isolated NFC issue angelican, so non nfc varaints wont show nfc app
+🔹 Signed build
+🔹 Includes MIUI Camera & Lunari Dolby
+🔹 June security patch
+🔹 Default Kernel Sashimi
 🔹s
 
 ━━━━━━━━━━━━━━━━━━━
