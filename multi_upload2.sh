@@ -129,18 +129,28 @@ CHANGELOG_CONTENT=$(curl -s "$CHANGELOG_URL")
 if [ -n "$CHANGELOG_CONTENT" ]; then
     echo "Creating Telegraph post from changelog..."
     
+    # Format content for Telegraph API - convert plain text to HTML paragraphs
+    FORMATTED_CONTENT=$(echo "$CHANGELOG_CONTENT" | sed 's/^/<p>/;s/$/<\/p>/;s/^\s*$/<br>/g' | jq -R -s .)
+    
     # Create Telegraph page with changelog content
     # Using Telegraph API to create a new page
     TELEGRAPH_RESPONSE=$(curl -s -X POST "https://api.telegra.ph/createPage" \
-        -d "access_token=0931b1d26cb19edf66f01aa463e9ce79546dd786fe1b991126ccc7e25ad5d551&title=EvolutionX Changelog&content=$(echo "$CHANGELOG_CONTENT" | jq -R -s . | sed 's/^"//;s/"$//' | sed 's/"/\\"/g' | sed 's/\n/<br>/g')" 2>/dev/null)
+        -H "Content-Type: application/x-www-form-urlencoded" \
+        -d "access_token=0931b1d26cb19edf66f01aa463e9ce79546dd786fe1b991126ccc7e25ad5d551&title=EvolutionX%20Changelog&author=EvolutionX&content=$FORMATTED_CONTENT")
     
-    TELEGRAPH_LINK=$(echo "$TELEGRAPH_RESPONSE" | grep -o '"url":"[^"]*' | cut -d'"' -f4)
-    
-    if [ -n "$TELEGRAPH_LINK" ]; then
-        echo "✓ Telegraph post created: $TELEGRAPH_LINK"
-        CHANGELOG_LINK="<b>⚙️ <a href=\"$TELEGRAPH_LINK\">Changelog</a></b>"
+    # Extract Telegraph URL using jq if available, otherwise use grep
+    if command -v jq &> /dev/null; then
+        TELEGRAPH_LINK=$(echo "$TELEGRAPH_RESPONSE" | jq -r '.result.url' 2>/dev/null)
     else
-        echo "⚠ Failed to create Telegraph post, using fallback link"
+        TELEGRAPH_LINK=$(echo "$TELEGRAPH_RESPONSE" | grep -oP '"url"\s*:\s*"\K[^"]+' | head -1)
+    fi
+    
+    if [ -n "$TELEGRAPH_LINK" ] && [ "$TELEGRAPH_LINK" != "null" ]; then
+        echo "✓ Telegraph post created: https://telegra.ph$TELEGRAPH_LINK"
+        CHANGELOG_LINK="<b>⚙️ <a href=\"https://telegra.ph$TELEGRAPH_LINK\">Changelog</a></b>"
+    else
+        echo "⚠ Failed to create Telegraph post"
+        echo "Response: $TELEGRAPH_RESPONSE"
         CHANGELOG_LINK="<b>⚙️ <a href=\"https://telegra.ph/\">Changelog</a></b>"
     fi
 else
