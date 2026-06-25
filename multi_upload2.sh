@@ -166,7 +166,7 @@ $DOWNLOADS_SECTION
 
 ━━━━━━━━━━━━━━━━━━━
 <b>📝 Notes:</b>
-• NFC wont spawn on non NFC variant that causes error
+• NFC wont spawn on non NFC variant
 • Blur effect will only work for 3GB ram and up variant
 • Signed build
 • Includes MIUI Camera & Lunari Dolby
