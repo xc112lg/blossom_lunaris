@@ -79,6 +79,32 @@ for filename in "${filenames[@]}"; do
     fi
 done
 
+CHANGELOG_URL="https://t.me/ProjectInfinityX/1882"
+
+if [ -n "$TELEGRAPH_TOKEN" ]; then
+    CHANGELOG_CONTENT=$(curl -fsSL \
+        "https://raw.githubusercontent.com/Evolution-X/changelog/refs/heads/bka/changelogs/LATEST.txt" 2>/dev/null)
+
+    if [ -n "$CHANGELOG_CONTENT" ]; then
+
+        TELEGRAPH_RESPONSE=$(curl -s \
+            -X POST "https://api.telegra.ph/createPage" \
+            -d "access_token=$TELEGRAPH_TOKEN" \
+            --data-urlencode "title=Evolution-X Changelog $(date '+%Y-%m-%d')" \
+            --data-urlencode "author_name=xc112lg" \
+            --data-urlencode "content=[{\"tag\":\"pre\",\"children\":[$(jq -Rs . <<< "$CHANGELOG_CONTENT")]}]")
+
+        CHANGELOG_URL=$(echo "$TELEGRAPH_RESPONSE" | jq -r '.result.url // empty')
+
+        if [ -n "$CHANGELOG_URL" ]; then
+            echo "✓ Changelog uploaded: $CHANGELOG_URL"
+        else
+            CHANGELOG_URL="https://t.me/ProjectInfinityX/1882"
+            echo "⚠ Failed to create Telegraph page"
+        fi
+    fi
+fi
+
 # Create Downloads section with LABELS ONLY (no filename shown)
 DOWNLOADS_SECTION="━━━━━━━━━━━━━━━━━━━
 <b>📥 Downloads:</b>"
@@ -171,7 +197,7 @@ TELEGRAM_MESSAGE="<b>EvolutionX-16.0 | UNOFFICIAL📱</b>
 <b>👨‍💻 Builder:</b> <a href=\"http://t.me/xc112lg\">xc112lg</a>
 <b>🤖 Android Version:</b> 16 | QPR2
 <b>📅 Build Date:</b> $(date '+%d/%m/%y')
-$CHANGELOG_LINK
+<b>⚙️ <a href=\"$CHANGELOG_URL\">Changelog</a></b>
 <b>📸 <a href=\"https://t.me/AsTechpro20_dump/28\">Screenshots</a></b>
 
 $DOWNLOADS_SECTION
