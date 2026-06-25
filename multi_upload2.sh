@@ -129,29 +129,35 @@ CHANGELOG_CONTENT=$(curl -s "$CHANGELOG_URL")
 if [ -n "$CHANGELOG_CONTENT" ]; then
     echo "Creating Telegraph post from changelog..."
     
-    # Format content for Telegraph API - convert plain text to HTML paragraphs
-    FORMATTED_CONTENT=$(echo "$CHANGELOG_CONTENT" | sed 's/^/<p>/;s/$/<\/p>/;s/^\s*$/<br>/g' | jq -R -s .)
+    # Create properly formatted JSON for Telegraph API
+    TELEGRAPH_REQUEST=$(cat <<EOF
+{
+    "access_token": "0931b1d26cb19edf66f01aa463e9ce79546dd786fe1b991126ccc7e25ad5d551",
+    "title": "EvolutionX Changelog",
+    "author": "EvolutionX",
+    "content": [{"tag": "pre", "children": ["$(echo "$CHANGELOG_CONTENT" | jq -Rs .)"]}]
+}
+EOF
+)
     
-    # Create Telegraph page with changelog content
-    # Using Telegraph API to create a new page
+    # Create Telegraph page
     TELEGRAPH_RESPONSE=$(curl -s -X POST "https://api.telegra.ph/createPage" \
-        -H "Content-Type: application/x-www-form-urlencoded" \
-        -d "access_token=0931b1d26cb19edf66f01aa463e9ce79546dd786fe1b991126ccc7e25ad5d551&title=EvolutionX%20Changelog&author=EvolutionX&content=$FORMATTED_CONTENT")
+        -H "Content-Type: application/json" \
+        -d "$TELEGRAPH_REQUEST" 2>/dev/null)
     
-    # Extract Telegraph URL using jq if available, otherwise use grep
-    if command -v jq &> /dev/null; then
-        TELEGRAPH_LINK=$(echo "$TELEGRAPH_RESPONSE" | jq -r '.result.url' 2>/dev/null)
-    else
-        TELEGRAPH_LINK=$(echo "$TELEGRAPH_RESPONSE" | grep -oP '"url"\s*:\s*"\K[^"]+' | head -1)
-    fi
+    echo "Telegraph Response: $TELEGRAPH_RESPONSE"
     
-    if [ -n "$TELEGRAPH_LINK" ] && [ "$TELEGRAPH_LINK" != "null" ]; then
-        echo "✓ Telegraph post created: https://telegra.ph$TELEGRAPH_LINK"
-        CHANGELOG_LINK="<b>⚙️ <a href=\"https://telegra.ph$TELEGRAPH_LINK\">Changelog</a></b>"
+    # Extract URL from JSON response
+    TELEGRAPH_LINK=$(echo "$TELEGRAPH_RESPONSE" | jq -r '.result.url' 2>/dev/null)
+    
+    if [ -n "$TELEGRAPH_LINK" ] && [ "$TELEGRAPH_LINK" != "null" ] && [ "$TELEGRAPH_LINK" != "/" ]; then
+        FULL_TELEGRAPH_URL="https://telegra.ph$TELEGRAPH_LINK"
+        echo "✓ Telegraph post created: $FULL_TELEGRAPH_URL"
+        CHANGELOG_LINK="<b>⚙️ <a href=\"$FULL_TELEGRAPH_URL\">Changelog</a></b>"
     else
-        echo "⚠ Failed to create Telegraph post"
-        echo "Response: $TELEGRAPH_RESPONSE"
-        CHANGELOG_LINK="<b>⚙️ <a href=\"https://telegra.ph/\">Changelog</a></b>"
+        echo "⚠ Telegraph creation failed or returned invalid URL"
+        echo "Falling back to GitHub raw URL..."
+        CHANGELOG_LINK="<b>⚙️ <a href=\"$CHANGELOG_URL\">Changelog</a></b>"
     fi
 else
     echo "⚠ Failed to fetch changelog from GitHub"
