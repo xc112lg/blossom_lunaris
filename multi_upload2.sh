@@ -185,7 +185,7 @@ $DOWNLOADS_SECTION
 
 ━━━━━━━━━━━━━━━━━━━
 <b>🌐 Stay Updated:</b>
-📢 @changelogblossom_bot
+📢 https://t.me/xc112lgblossomupdate
 
 ━━━━━━━━━━━━━━━━━━━
 #blossom #UNOFFICIAL #Evolution-X #lunaridolby #Rom"
