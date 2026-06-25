@@ -156,7 +156,7 @@ TELEGRAM_MESSAGE="<b>EvolutionX-16.0 | UNOFFICIAL📱</b>
 <b>🤖 Android Version:</b> 16 | QPR2
 <b>📅 Build Date:</b> $(date '+%d/%m/%y')
 <b>⚙️ <a href=\"$CHANGELOG_URL\">Changelog</a></b>
-<b>📸 <a href=\"https://t.me/AsTechpro20_dump/28\">Screenshots</a></b>
+<b>📸 <a href=\"https://t.me/xc112lgblossomsc\">Screenshots</a></b>
 
 $DOWNLOADS_SECTION
 
