@@ -168,7 +168,7 @@ $DOWNLOADS_SECTION
 <b>📝 Notes:</b>
 • NFC wont spawn on non NFC variant
 • Blur effect will only work for 3GB ram and up variant
-• Signed build
+• Signed
 • Includes MIUI Camera & Lunari Dolby
 • June security patch
 • Default Kernel Sashimi
