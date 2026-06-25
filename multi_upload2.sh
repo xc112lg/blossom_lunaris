@@ -59,70 +59,6 @@ done
 echo "Files uploaded successfully."
 
 # ============================================
-# FETCH CHANGELOG AND CREATE TELEGRA.PH PAGE
-# ============================================
-
-echo "Fetching changelog from GitHub..."
-
-CHANGELOG_URL="https://raw.githubusercontent.com/Evolution-X/changelog/refs/heads/bka/changelogs/LATEST.txt"
-CHANGELOG_TEMP=$(mktemp)
-TELEGRA_LINK=""
-
-if curl -s --max-time 10 "$CHANGELOG_URL" -o "$CHANGELOG_TEMP" 2>/dev/null; then
-    CHANGELOG_CONTENT=$(cat "$CHANGELOG_TEMP")
-    
-    if [ -n "$CHANGELOG_CONTENT" ]; then
-        echo "✓ Changelog fetched successfully"
-        echo "Creating Telegra.ph page..."
-        
-        # Escape content for JSON
-        ESCAPED_CONTENT=$(printf '%s' "$CHANGELOG_CONTENT" | jq -Rs .)
-        
-        # Create JSON for Telegra.ph API
-        TELEGRA_JSON="{
-            \"title\": \"ProjectInfinity-X 3.11 - Build $(date '+%d/%m/%y')\",
-            \"author_name\": \"AsTechpro20\",
-            \"author_url\": \"https://t.me/astechpro20\",
-            \"content\": [
-                {
-                    \"tag\": \"h1\",
-                    \"children\": [\"ProjectInfinity-X 3.11 Changelog\"]
-                },
-                {
-                    \"tag\": \"p\",
-                    \"children\": [\"Device: Blossom | Build: $(date '+%d/%m/%y')\"]
-                },
-                {
-                    \"tag\": \"pre\",
-                    \"children\": [$ESCAPED_CONTENT]
-                }
-            ]
-        }"
-        
-        # Send to Telegra.ph API
-        TELEGRA_RESPONSE=$(curl -s -X POST \
-            -H "Content-Type: application/json" \
-            -d "$TELEGRA_JSON" \
-            "https://api.telegra.ph/createPage")
-        
-        # Extract the URL from response
-        TELEGRA_LINK=$(echo "$TELEGRA_RESPONSE" | grep -o '"url":"[^"]*' | head -1 | cut -d'"' -f4)
-        
-        if [ -n "$TELEGRA_LINK" ]; then
-            echo "✓ Telegra.ph page created successfully"
-            echo "  URL: https://telegra.ph/$TELEGRA_LINK"
-        else
-            echo "⚠ Failed to create Telegra.ph page"
-            TELEGRA_LINK=""
-        fi
-    fi
-else
-    echo "⚠ Failed to fetch changelog"
-fi
-
-rm -f "$CHANGELOG_TEMP"
-
-# ============================================
 # TELEGRAM NOTIFICATION
 # ============================================
 
@@ -143,7 +79,7 @@ for filename in "${filenames[@]}"; do
     fi
 done
 
-# Create Downloads section
+# Create Downloads section with LABELS ONLY (no filename shown)
 DOWNLOADS_SECTION="━━━━━━━━━━━━━━━━━━━
 <b>📥 Downloads:</b>"
 
@@ -153,6 +89,7 @@ for file_entry in "${FILE_ENTRIES[@]}"; do
     url="${remaining%%|*}"
     size="${remaining##*|}"
     
+    # Create label based on filename but don't show actual filename
     label="File"
     download_links=""
     
@@ -173,8 +110,10 @@ for file_entry in "${FILE_ENTRIES[@]}"; do
         download_links="<a href=\"${url}\">Download</a>"
     fi
     
+    # Only show label and links, NO filename anywhere
     DOWNLOADS_SECTION+="
 🔹 ${label} - ${download_links} (${size})"
+
 done
 
 DOWNLOADS_SECTION+="
@@ -182,35 +121,26 @@ DOWNLOADS_SECTION+="
 ━━━━━━━━━━━━━━━━━━━
 <b>📲 <a href=\"https://telegra.ph/flashing-instruction-11-15\">Installation Guide</a></b>"
 
-# Build Changelog Link Section
-CHANGELOG_LINK_SECTION=""
-if [ -n "$TELEGRA_LINK" ]; then
-    CHANGELOG_LINK_SECTION="
-
-━━━━━━━━━━━━━━━━━━━
-<b>📋 <a href=\"https://telegra.ph/$TELEGRA_LINK\">View Full Changelog</a></b>"
-fi
-
 # Create full Telegram message
-TELEGRAM_MESSAGE="<b>ProjectInfinity-X 3.11 | UNOFFICIAL📱</b>
+TELEGRAM_MESSAGE="<b>EvolutionX-16.0 | UNOFFICIAL📱</b>
 
 <b>Device:</b> Blossom
-<b>👨‍💻 Builder:</b> <a href=\"http://t.me/astechpro20\">AsTechpro20</a>
+<b>👨‍💻 Builder:</b> <a href=\"http://t.me/xc112lg\">xc112lg</a>
 <b>🤖 Android Version:</b> 16 | QPR2
 <b>📅 Build Date:</b> $(date '+%d/%m/%y')
 <b>⚙️ <a href=\"https://t.me/ProjectInfinityX/1882\">Changelog</a></b>
 <b>📸 <a href=\"https://t.me/AsTechpro20_dump/28\">Screenshots</a></b>
 
 $DOWNLOADS_SECTION
-$CHANGELOG_LINK_SECTION
 
 ━━━━━━━━━━━━━━━━━━━
 <b>🐞 Issues:</b>
-• Blur effect only work with 3GB memory
+• NFC not working
 
 ━━━━━━━━━━━━━━━━━━━
 <b>📝 Notes:</b>
-• Both GApps & Vanilla are available
+• NFC wont spawn on non NFC variant that causes error
+• Blur effect will only work for 3GB ram and up variant
 • Signed build
 • Includes MIUI Camera & Lunari Dolby
 • June security patch
@@ -218,34 +148,40 @@ $CHANGELOG_LINK_SECTION
 
 ━━━━━━━━━━━━━━━━━━━
 <b>❤️ Credits & Thanks:</b>
+• @HaiKitoo for trees
+• @fukiame for kernel
+• @astechpro20 for msg template
 • Yui Onanii, fukiame, @snnbyyds, <a href=\"http://t.me/Sushrut1101\">Sushrut</a>, xiaomi-blossom-dev contributors for base tree
-• Thanks to <a href=\"http://t.me/nya_toru0w0\">Noi</a> for server
+• Thanks to <a href=\"http://foss.crave.io\">crave.io</a> for server
 • Special Thanks to 0kaarun & Yohan Yuan for their help
 • Thanks to all other devs
 
 ━━━━━━━━━━━━━━━━━━━
 <b>🌐 Stay Updated:</b>
-📢 @AsTechpro20_lab
-📢 @AsTechpro20_dump
-📢 @AsTechpro20_lab_support
+📢 @changelogblossom_bot
 
 ━━━━━━━━━━━━━━━━━━━
-#blossom #UNOFFICIAL #projectinfinityx #infinityx #lunaridolby #Rom"
+#blossom #UNOFFICIAL #Evolution-X #lunaridolby #Rom"
 
-# Send Telegram message
+# Send Telegram message with smart fallback
 if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
     echo "⚠ Telegram credentials not set. Skipping Telegram notification."
 else
     echo "Sending Telegram notification..."
 
+    # Banner image URL
     BANNER_IMAGE="https://github.com/Evolution-X/manifest/raw/bka/Banner.png"
+
+    # Check message length
     MSG_LENGTH=${#TELEGRAM_MESSAGE}
     echo "Message length: $MSG_LENGTH characters"
     
+    # Telegram caption limit (conservative estimate)
     CAPTION_LIMIT=3500
 
     if [ $MSG_LENGTH -le $CAPTION_LIMIT ]; then
-        echo "✓ Message fits in caption - sending merged"
+        # Message fits in caption - send as merged
+        echo "✓ Message fits in caption - sending merged (image + text in one)"
         
         TEMP_JSON=$(mktemp)
         cat > "$TEMP_JSON" << JSONEOF
@@ -265,19 +201,23 @@ JSONEOF
         rm -f "$TEMP_JSON"
 
         if echo "$RESPONSE" | grep -q '"ok":true'; then
-            echo "✓ Telegram notification sent successfully!"
+            echo "✓ Telegram notification sent successfully (merged)!"
         else
             echo "⚠ Merged send failed, trying fallback..."
             FALLBACK=1
         fi
     else
+        # Message too long for caption - use fallback
         echo "⚠ Message too long for caption ($MSG_LENGTH > $CAPTION_LIMIT)"
+        echo "✓ Using fallback: Sending image + text as separate messages"
         FALLBACK=1
     fi
 
+    # FALLBACK: Send image and text separately if needed
     if [ "$FALLBACK" == "1" ]; then
         echo "Sending image first..."
         
+        # Send image
         curl -s -X POST \
             -H "Content-Type: application/json" \
             -d "{\"chat_id\": $TELEGRAM_CHAT_ID, \"photo\": \"$BANNER_IMAGE\", \"caption\": \"<b>ProjectInfinity-X 3.11 Release</b>\", \"parse_mode\": \"HTML\"}" \
@@ -285,6 +225,7 @@ JSONEOF
 
         echo "Sending full message..."
         
+        # Send full text message
         TEMP_JSON=$(mktemp)
         cat > "$TEMP_JSON" << JSONEOF
 {
@@ -302,9 +243,10 @@ JSONEOF
         rm -f "$TEMP_JSON"
 
         if echo "$RESPONSE" | grep -q '"ok":true'; then
-            echo "✓ Telegram notification sent successfully!"
+            echo "✓ Telegram notification sent successfully (fallback)!"
         else
             echo "✗ Failed to send Telegram notification"
+            echo "Response: $RESPONSE"
         fi
     fi
 fi
