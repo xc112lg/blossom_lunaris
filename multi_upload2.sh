@@ -147,48 +147,6 @@ DOWNLOADS_SECTION+="
 ━━━━━━━━━━━━━━━━━━━
 <b>📲 <a href=\"https://telegra.ph/flashing-instruction-11-15\">Installation Guide</a></b>"
 
-# Fetch changelog from GitHub and create Telegraph post
-echo "Fetching changelog from GitHub..."
-CHANGELOG_URL="https://raw.githubusercontent.com/Evolution-X/changelog/refs/heads/bka/changelogs/LATEST.txt"
-CHANGELOG_CONTENT=$(curl -s "$CHANGELOG_URL")
-
-if [ -n "$CHANGELOG_CONTENT" ]; then
-    echo "Creating Telegraph post from changelog..."
-    
-    # Create properly formatted JSON for Telegraph API
-    TELEGRAPH_REQUEST=$(cat <<EOF
-{
-    "access_token": "0931b1d26cb19edf66f01aa463e9ce79546dd786fe1b991126ccc7e25ad5d551",
-    "title": "EvolutionX Changelog",
-    "author": "EvolutionX",
-    "content": [{"tag": "pre", "children": ["$(echo "$CHANGELOG_CONTENT" | jq -Rs .)"]}]
-}
-EOF
-)
-    
-    # Create Telegraph page
-    TELEGRAPH_RESPONSE=$(curl -s -X POST "https://api.telegra.ph/createPage" \
-        -H "Content-Type: application/json" \
-        -d "$TELEGRAPH_REQUEST" 2>/dev/null)
-    
-    echo "Telegraph Response: $TELEGRAPH_RESPONSE"
-    
-    # Extract URL from JSON response
-    TELEGRAPH_LINK=$(echo "$TELEGRAPH_RESPONSE" | jq -r '.result.url' 2>/dev/null)
-    
-    if [ -n "$TELEGRAPH_LINK" ] && [ "$TELEGRAPH_LINK" != "null" ] && [ "$TELEGRAPH_LINK" != "/" ]; then
-        FULL_TELEGRAPH_URL="https://telegra.ph$TELEGRAPH_LINK"
-        echo "✓ Telegraph post created: $FULL_TELEGRAPH_URL"
-        CHANGELOG_LINK="<b>⚙️ <a href=\"$FULL_TELEGRAPH_URL\">Changelog</a></b>"
-    else
-        echo "⚠ Telegraph creation failed or returned invalid URL"
-        echo "Falling back to GitHub raw URL..."
-        CHANGELOG_LINK="<b>⚙️ <a href=\"$CHANGELOG_URL\">Changelog</a></b>"
-    fi
-else
-    echo "⚠ Failed to fetch changelog from GitHub"
-    CHANGELOG_LINK="<b>⚙️ <a href=\"https://telegra.ph/\">Changelog</a></b>"
-fi
 
 # Create full Telegram message
 TELEGRAM_MESSAGE="<b>EvolutionX-16.0 | UNOFFICIAL📱</b>
