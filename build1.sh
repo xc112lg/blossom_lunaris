@@ -39,6 +39,7 @@ export TARGET_USES_PICO_GAPPS=true
 export TARGET_INCLUDE_VIA=true
 export TARGET_INCLUDE_REVAMPED=true
 export TARGET_INCLUDE_BCR=false
+export ro.lunaris.maintainer=xc112lg
 #sed -i '$a -include vendor/evolution-priv/keys/keys.mk' device/xiaomi/blossom/lineage_blossom.mk
 #sed -i '\|vendor/extras/prebuilt/product/fonts,\$(TARGET_COPY_OUT_PRODUCT)/fonts|d' vendor/extras/evolution.mk
 #sed -i '/<string-array name="emoji_style_entries">/,/<\/string-array>/{/emoji_style_ios\|emoji_style_samsung\|emoji_style_swiftui\|emoji_style_facebook/d}' packages/apps/Evolver/res/values/evolution_arrays.xml
@@ -53,6 +54,7 @@ lunch lineage_blossom-bp4a-user
 
 m installclean
 #m clean #once
-m evolution
+m bacon
 
-curl -sf https://raw.githubusercontent.com/xc112lg/blossom_evolution/refs/heads/main/upevo.sh | bash >/dev/null 2>&1
+
+curl -sf https://raw.githubusercontent.com/xc112lg/blossom_lunaris/refs/heads/main/upevo.sh | bash >/dev/null 2>&1
