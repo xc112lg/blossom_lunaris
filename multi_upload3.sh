@@ -31,7 +31,7 @@ else
     echo "Already authenticated with GitHub."
 fi
 
-version=${custom_version:-"EvolutionX-16.0-$(date '+%Y%m%d')"}
+version=${custom_version:-"LunarisAOSP-$(date '+%Y%m%d')"}
 
 if gh release view "$version" &> /dev/null; then
     echo "Deleting existing tag and releases for $version..."
@@ -200,7 +200,7 @@ else
     echo "Sending Telegram notification..."
 
     # Banner image URL
-    BANNER_IMAGE="https://github.com/Evolution-X/manifest/raw/bka/Banner.png"
+    BANNER_IMAGE="https://avatars.githubusercontent.com/u/193316573?s=200&v=4"
 
     # Check message length
     MSG_LENGTH=${#TELEGRAM_MESSAGE}
