@@ -65,6 +65,7 @@ echo "Files uploaded successfully."
 echo "Preparing to send Telegram notification..."
 
 RELEASE_TAG="$version"
+GITHUB_REPO="${GITHUB_REPO:-blossom_lunaris}"
 
 declare -a FILE_ENTRIES
 
