@@ -21,7 +21,7 @@ rm -rf TMP_PATCHES
 sudo apt update >/dev/null 2>&1
 sudo apt install patchelf -y >/dev/null 2>&1
 rm -rf .repo/local_manifests packages/apps/Evolver vendor/extras
-repo init -u https://github.com/Evolution-X/manifest -b bka --git-lfs --depth=1
+repo init -u https://github.com/Lunaris-AOSP/android -b 16.2 --git-lfs --depth=1
 git clone https://$GH_TOKEN@github.com/xc112lg/blossom_manifest.git -b main .repo/local_manifests
 repo sync -c -j32 --force-sync --no-clone-bundle --no-tags
 /opt/crave/resync.sh
@@ -39,13 +39,13 @@ export TARGET_USES_PICO_GAPPS=true
 export TARGET_INCLUDE_VIA=true
 export TARGET_INCLUDE_REVAMPED=true
 export TARGET_INCLUDE_BCR=false
-sed -i '$a -include vendor/evolution-priv/keys/keys.mk' device/xiaomi/blossom/lineage_blossom.mk
-sed -i '\|vendor/extras/prebuilt/product/fonts,\$(TARGET_COPY_OUT_PRODUCT)/fonts|d' vendor/extras/evolution.mk
-sed -i '/<string-array name="emoji_style_entries">/,/<\/string-array>/{/emoji_style_ios\|emoji_style_samsung\|emoji_style_swiftui\|emoji_style_facebook/d}' packages/apps/Evolver/res/values/evolution_arrays.xml
+#sed -i '$a -include vendor/evolution-priv/keys/keys.mk' device/xiaomi/blossom/lineage_blossom.mk
+#sed -i '\|vendor/extras/prebuilt/product/fonts,\$(TARGET_COPY_OUT_PRODUCT)/fonts|d' vendor/extras/evolution.mk
+#sed -i '/<string-array name="emoji_style_entries">/,/<\/string-array>/{/emoji_style_ios\|emoji_style_samsung\|emoji_style_swiftui\|emoji_style_facebook/d}' packages/apps/Evolver/res/values/evolution_arrays.xml
 
 # Trim the values array (property values) — must stay in sync with entries
-sed -i '/<string-array name="emoji_style_values">/,/<\/string-array>/{/<item>ios<\/item>\|<item>samsung<\/item>\|<item>swiftui<\/item>\|<item>facebook<\/item>/d}' packages/apps/Evolver/res/values/evolution_arrays.xml
-sed -i '/fonts_customization_emoji_\(ios\|samsung\|swiftui\|facebook\)\.xml/d' vendor/extras/evolution.mk
+#sed -i '/<string-array name="emoji_style_values">/,/<\/string-array>/{/<item>ios<\/item>\|<item>samsung<\/item>\|<item>swiftui<\/item>\|<item>facebook<\/item>/d}' packages/apps/Evolver/res/values/evolution_arrays.xml
+#sed -i '/fonts_customization_emoji_\(ios\|samsung\|swiftui\|facebook\)\.xml/d' vendor/extras/evolution.mk
 #sed -i '/<item>com.android.nfc<\/item>/d' frameworks/base/core/res/res/values/policy_exempt_apps.xml
 #cat frameworks/base/core/res/res/values/policy_exempt_apps.xml
 
