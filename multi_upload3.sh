@@ -149,7 +149,7 @@ DOWNLOADS_SECTION+="
 
 
 # Create full Telegram message
-TELEGRAM_MESSAGE="<b>EvolutionX-16.0 | UNOFFICIAL📱</b>
+TELEGRAM_MESSAGE="<b>LunarisAOSP 16.2 | UNOFFICIAL📱</b>
 
 <b>Device:</b>Blossom
 <b>👨‍💻 Builder:</b> <a href=\"http://t.me/xc112lg\">xc112lg</a>
@@ -191,7 +191,7 @@ Thanks to all other devs
 📢 @xc112lgblossomupdate
 📢 @xc112lgblossomupdate1
 
-#blossom #UNOFFICIAL #Evolution-X #lunaridolby #Rom"
+#blossom #UNOFFICIAL #LunarisAOSP #lunaridolby #Rom"
 
 # Send Telegram message with smart fallback
 if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
