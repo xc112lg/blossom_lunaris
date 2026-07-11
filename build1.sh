@@ -40,7 +40,8 @@ export TARGET_INCLUDE_VIA=true
 export TARGET_INCLUDE_REVAMPED=true
 export TARGET_INCLUDE_BCR=false
 export ro.lunaris.maintainer=xc112lg
-#sed -i '$a -include vendor/evolution-priv/keys/keys.mk' device/xiaomi/blossom/lineage_blossom.mk
+sed -i '$a -include vendor/evolution-priv/keys/keys.mk' device/xiaomi/blossom/lineage_blossom.mk
+sed -i "\$a ro.lunaris.maintainer=xc112lg | How's Your Day" device/xiaomi/blossom/system.prop
 #sed -i '\|vendor/extras/prebuilt/product/fonts,\$(TARGET_COPY_OUT_PRODUCT)/fonts|d' vendor/extras/evolution.mk
 #sed -i '/<string-array name="emoji_style_entries">/,/<\/string-array>/{/emoji_style_ios\|emoji_style_samsung\|emoji_style_swiftui\|emoji_style_facebook/d}' packages/apps/Evolver/res/values/evolution_arrays.xml
 
